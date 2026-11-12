@@ -88,11 +88,12 @@ static func find_asset(map_id: String, category: String, file_name: String) -> S
 
 static func find_asset_directory(map_id: String, category: String, directory_name: String) -> String:
 	_ensure_loaded()
+	# 保留 res:// 虚拟路径；转成物理路径后无法检查只存在于 PCK 中的目录。
 	var indexed := String(_asset_paths.get("%s/%s" % [category, directory_name], ""))
-	if not indexed.is_empty() and DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(indexed)):
+	if not indexed.is_empty() and DirAccess.dir_exists_absolute(indexed):
 		return indexed
 	var local_path := "%s/%s/%s/%s" % [ASSET_ROOT, folder_name(map_id), category, directory_name]
-	return local_path if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(local_path)) else ""
+	return local_path if DirAccess.dir_exists_absolute(local_path) else ""
 
 static func folder_name(map_id: String) -> String:
 	_ensure_loaded()
